@@ -5,7 +5,7 @@ import Home from './pages/Home'
 import Doctors from './pages/Doctors'
 import About from './pages/About'
 import Contact from './pages/Contact'
-import Login from './components/Login'
+import Login from './pages/Login'
 
 const App = () => {
   return (
