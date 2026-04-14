@@ -16,23 +16,23 @@ const Login = () => {
             <div className='w-full'>
               <p>Full Name</p>
               <input
-                className='border border-zinc-400 rounded w-full p-2 mt-1' 
                 type="text" 
+                className='border border-zinc-400 rounded w-full p-2 mt-1' 
               />
             </div>
           }
         <div className='w-full'>
           <p>Email</p>
-          <input
-            className='border-zinc-400 rounded w-full px-2 mt-1' 
-            type="email" 
+          <input            
+            type="email"
+            className='border border-zinc-400 rounded w-full p-2 mt-1'
           />
         </div>
         <div className='w-full'>
           <p>Password</p>
           <input 
-            className='border-zinc-400 rounded w-full px-2 mt-1' 
             type="password" 
+            className='border border-zinc-400 rounded w-full p-2 mt-1' 
           />
         </div>
         <button className='bg-primary text-white w-full py-2 rounded-md text-base'>{state === 'Sign Up' ? 'Sign Up' : 'Login'}</button> 
