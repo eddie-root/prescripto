@@ -9,7 +9,8 @@ export const AppProvider = ({children}) => {
         const savedUser = localStorage.getItem('user');
         return savedUser ? JSON.parse(savedUser) : null;
     });
-    const [token, setToken] = useState(localStorage.getItem('token') || null);
+    // const [token, setToken] = useState(localStorage.getItem('token') || null);
+    const [token, setToken] = useState(true);
     const [doctors, setDoctors] = useState([]);
 
     const value = {user, setUser, token, setToken, doctors}
