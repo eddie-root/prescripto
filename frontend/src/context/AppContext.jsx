@@ -10,9 +10,9 @@ export const AppProvider = ({children}) => {
         return savedUser ? JSON.parse(savedUser) : null;
     });
     const [token, setToken] = useState(localStorage.getItem('token') || null);
+    const [doctors, setDoctors] = useState([]);
 
-
-    const value = {user, setUser, token, setToken}
+    const value = {user, setUser, token, setToken, doctors}
 
    return (
     <AppContext.Provider value={value}>
