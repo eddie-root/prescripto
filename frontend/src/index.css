@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+/* ============================= */
+/*   DESIGN SYSTEM DEFINITIVO    */
+/* ============================= */
+
+@theme {
+  --color-primary: #5B62EE;       /* azul institucional #1E293B; */
+  --color-accent: #DC2626;        /* vermelho ação */
+  --color-background: #F8FAFC;    /* fundo suave */
+  --color-border-soft: #E2E8F0;   /* bordas */
+  --color-text-secondary: #64748B;
+}
+
+/* ============================= */
+
+* {
+  font-family: 'Outfit', sans-serif;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-primary);
+}
+
+/* ===== BOTÕES ===== */
+
+.btn-primary {
+  @apply bg-[--color-accent] text-white h-12 px-6 rounded-xl font-medium hover:opacity-90 transition;
+}
+
+.btn-secondary {
+  @apply bg-white border border-[--color-border-soft] text-[--color-primary] h-12 px-6 rounded-xl hover:bg-gray-50 transition;
+}
+
+/* ===== CARDS ===== */
+
+.card {
+  @apply bg-white border border-[--color-border-soft] rounded-xl shadow-sm p-6;
+}
+
+/* ===== TÍTULOS ===== */
+
+.title-page {
+  @apply text-3xl font-semibold mb-6;
+}
+
+.title-section {
+  @apply text-xl font-semibold mb-4;
+}
+
+/* ===== UTILIDADES ===== */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
