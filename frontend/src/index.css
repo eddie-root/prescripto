@@ -6,6 +6,7 @@
 /*   DESIGN SYSTEM DEFINITIVO    */
 /* ============================= */
 
+
 @theme {
   --color-primary: #5f6FFF;       /* azul institucional #1E293B; */
   --color-accent: #DC2626;        /* vermelho ação */
@@ -15,9 +16,12 @@
 }
 
 /* ============================= */
-
 * {
   font-family: 'Outfit', sans-serif;
+}
+
+.active hr{
+  @apply block
 }
 
 body {
