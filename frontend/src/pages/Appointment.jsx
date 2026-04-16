@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { assets } from '../assets/assets.js'
-import { toast } from 'react-hot-toast'
+import React, { useEffect, useState, useCallback } from 'react'
+import { useParams } from 'react-router-dom'
 import { useApp } from '../context/AppContext.jsx'
+import { assets } from '../assets/assets.js'
 import formatCurrency from '../utils/money'
+import RelatedDoctors from '../components/RelatedDoctors'
 
 
 const Appointment = () => {
 
   const { docId } = useParams();
-  const navigate = useNavigate();
-  const { doctors, token } = useApp();
-  const dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const { doctors } = useApp();
+  const dayOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   
   // Inicialize docInfo com null para indicar que os dados ainda não foram carregados
   const [docInfo, setDocInfo] = useState(null);
@@ -19,50 +18,74 @@ const Appointment = () => {
   const [slotIndex, setSlotIndex] = useState(0);
   const [slotTime, setSlotTime] = useState('');
 
-  const bookAppointment = () => {
-    if (!token) {
-      toast.warn('Login to book appointment')
-      return navigate('/login')
-    }
+  const getAvailableSlots = useCallback(async () => {
+    setDocSlots([]);
 
-    try {
-      const date = docSlots[slotIndex][0].datetime;
-
-      let day = date.getDate();
-      let month = date.getMonth() + 1;
-      let year = date.getFullYear();
-
-      const slotDate = day + '/' + month + '/' + year;
-
-
-      if (data.success) {
-        toast.success(data.message)
-        getDoctorsData();
-        navigate('/my-appointments')
-      } else {
-        toast.error(data.message)
-      }
+    // getting cucrrent date 
+    let today = new Date();
+    let allSlots = [];
     
-    } catch (error) {
-      toast.error(error.message);
-      console.log(error);
-    }
-  }
+    for(let i = 0; i < 7; i++){
+      // getting date with index
+      let currentDate = new Date(today)
+      currentDate.setDate(today.getDate() + i);
 
+      // setting end time of the date with index
+      let endTime = new Date(today)
+      endTime.setDate(today.getDate() + i);
+      endTime.setHours(21,0,0,0);
+
+      // setting hours
+      if (today.getDate() === currentDate.getDate()) {
+        currentDate.setHours(today.getHours() > 10 ? today.getHours() + 1 : 10);
+        currentDate.setMinutes(currentDate.getMinutes() > 30 ? 0 : 30);
+      
+      } else {
+        currentDate.setHours(10);
+        currentDate.setMinutes(0);  
+      }
+
+      let timeSlots = [];
+
+      while (currentDate < endTime) {
+        let formattedTime = currentDate.toLocaleTimeString('pt-BR', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+        
+        // add slot to away
+        timeSlots.push({
+          dateTime: new Date(currentDate),
+          time: formattedTime
+        })
+
+        // Increment curreent time by 30 minutos
+        currentDate.setMinutes(currentDate.getMinutes() + 30);
+      }
+      allSlots.push(timeSlots);
+    }
+    setDocSlots(allSlots);
+  }, [docInfo]);
 
   useEffect(() => {
     const fetchDocInfo = () => {
-      // Use .find() para obter o objeto do doutor, não um array
-      // Certifique-se de que docId (string) e doc._id (assumindo string) são comparados corretamente
       const selectedDoc = doctors.find((doc) => doc._id === docId);
       setDocInfo(selectedDoc);
     };
     fetchDocInfo();
-    // A dependência 'doctors' não é necessária se o array 'doctors' for estático (importado de assets.js)
-    // Se 'doctors' pudesse mudar (ex: vindo de uma API), ele deveria estar aqui.
-  }, [docId]); // Re-executa o efeito apenas se docId mudar
-  
-  // Adicione uma verificação para garantir que docInfo não é null antes de tentar renderizar
+  }, [docId, doctors]);
+
+  useEffect(() => {
+    if (docInfo) {
+      getAvailableSlots();
+    }
+  }, [docInfo, getAvailableSlots])
+
+  useEffect(() => {
+    console.log(docSlots)
+  },[docSlots] )
+
+  // Verificação no nível do componente para evitar renderizar com docInfo null
   if (!docInfo) {
     // Você pode exibir um spinner de carregamento, uma mensagem de "não encontrado" ou redirecionar
     return <div>Carregando informações do doutor...</div>;
@@ -98,41 +121,37 @@ const Appointment = () => {
        {/* /---------------- Booking Slots -------------------------- */}
        <div className='sm:ml-72 sm:pl-4 mt-4 font-medium text-gray-700'>
           <p>Booking Slots</p>
-          <div className='flex gap-3 items-center overflow-x-scroll mt-4'>
+          <div className='flex gap-3 items-center w-full overflow-x-scroll mt-4'>
             {
-              docSlots.length && docSlots.map((item, index)=> (
-                <div 
+              docSlots.length && docSlots.map((item, index) => (
+                <div
                   onClick={()=> setSlotIndex(index)}
-                  className={`text-center py-6 min-w-16 rounded-full cursor-pointer ${slotIndex === index ? 'bg-primary text-white' : 'border border-gray-300'}`} 
-                  key={index} 
+                  className={`text-center py-6 min-w-16 rounded-full cursor-pointer ${slotIndex === index ? 'bg-primary text-white' : 'border border-gray-400'  }`} 
+                  key={index}
                 >
-                  <p>{item[0] && dayOfWeek[item[0].datetime.getDay()]}</p>
-                  <p>{item[0] && item[0].datetime.getDate()}</p>
+                  <p>{item[0] && dayOfWeek[item[0].dateTime.getDay()]}</p>
+                  <p>{item[0] && item[0].dateTime.getDate()}</p>
                 </div>
               ))
             }
           </div>
 
-          <div className='flex items-center gap-3 w-full overflow-x-scroll mt-4' >
-            {docSlots.length && docSlots[slotIndex].map((item, index)=> (
+          <div className='flex items-center gap-3 w-full overflow-x-scroll mt-4'>
+            {docSlots.length && docSlots[slotIndex].map((item, index) => (
               <p 
                 onClick={()=> setSlotTime(item.time)}
+                className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time === slotTime ? 'bg-primary text-white' : 'text-gray-500 border border-gray-400'}`}
                 key={index}
-                className={`text-sm font-ligth flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${item.time === slotTime ? 'bg-primary text-white' : 'border border-gray-300'}`}
               >
                 {item.time.toLowerCase()}
               </p>
             ))}
           </div>
-          <button
-            onClick={bookAppointment}
-            className='bg-primary text-white text-sm font-light px-14 py-3 rounded-full my-6 cursor-pointer'
-          >
-            Book an Appointment
-          </button>
+          <button className='bg-primary text-white text-md font-light px-14 py-3 rounded-full my-6'>Book an Appointment</button>
+          
        </div>
      {/* /---------------- Listing Related Doctors-------------------------- */}
-      
+      <RelatedDoctors docId={docId} speciality={docInfo.speciality} />
     </div>
   )
 }
