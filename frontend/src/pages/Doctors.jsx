@@ -36,13 +36,13 @@ const Doctors = () => {
           <p onClick={()=> speciality === 'General physician' ? navigate('/doctors') : navigate('/doctors/General physician')} className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-400 rounded transition-all cursor-pointer ${speciality === 'General physician' ? 'bg-indigo-200 text-black' : ''}`} >General physician</p>
           <p onClick={()=> speciality === 'Gynecologist' ? navigate('/doctors') : navigate('/doctors/Gynecologist')} className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-400 rounded transition-all cursor-pointer ${speciality === 'Gynecologist' ? 'bg-indigo-200 text-black' : ''}`} >Gynecologist</p>
           <p onClick={()=> speciality === 'Dermatologist' ? navigate('/doctors') : navigate('/doctors/Dermatologist')} className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-400 rounded transition-all cursor-pointer ${speciality === 'Dermatologist' ? 'bg-indigo-200 text-black' : ''}`}>Dermatologist</p>
-          <p onClick={()=> speciality === 'Pediatricians' ? navigate('/doctors') : navigate('/doctors/Pediatricians')} className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-400 rounded transition-all cursor-pointer ${speciality === 'Pediatricians' ? 'bg-indigo-200 text-black' : ''}`}> Pediatricians</p>
-          <p onClick={()=> speciality === 'Neurologist' ? navigate('/doctors') : navigate('/doctors/Neurologist')} className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-400 rounded transition-all cursor-pointer ${speciality === 'Neurologist' ? 'bg-indigo-200 text-black' : ''}`}>  Neurologist</p>
+          <p onClick={()=> speciality === 'Pediatricians' ? navigate('/doctors') : navigate('/doctors/Pediatricians')} className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-400 rounded transition-all cursor-pointer ${speciality === 'Pediatricians' ? 'bg-indigo-200 text-black' : ''}`}>Pediatricians</p>
+          <p onClick={()=> speciality === 'Neurologist' ? navigate('/doctors') : navigate('/doctors/Neurologist')} className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-400 rounded transition-all cursor-pointer ${speciality === 'Neurologist' ? 'bg-indigo-200 text-black' : ''}`}>Neurologist</p>
           <p onClick={()=> speciality === 'Gastroenterologist' ? navigate('/doctors') : navigate('/doctors/Gastroenterologist')} className={`w-[94vw] sm:w-auto py-1.5 pr-16 border border-gray-400 rounded transition-all cursor-pointer ${speciality === 'Gastroenterologist' ? 'bg-indigo-200 text-black' : ''}`} >Gastroenterologist</p>
         </div>
         <div className="w-full grid grid-cols-4 gap-4">
           {filterDoc.map((item, index)=> (
-            <div onClick={()=> navigate(`/appointment/${item.id}`)} className="border border-blue-300 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500" key={index}>
+            <div onClick={()=> navigate(`/appointment/${item._id}`)} className="border border-blue-300 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500" key={index}>
               <img className="bg-blue-50" src={item.image} alt="" />
               <div className="p-4">
                 <div className="flex items-center gap-2 text-sm text-center text-gray-600">

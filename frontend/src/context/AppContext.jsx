@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-
+import { doctors } from "../assets/assets.js";
 
 export const AppContext = createContext();
 
@@ -11,7 +11,6 @@ export const AppProvider = ({children}) => {
     });
     // const [token, setToken] = useState(localStorage.getItem('token') || null);
     const [token, setToken] = useState(true);
-    const [doctors, setDoctors] = useState([]);
 
     const value = {user, setUser, token, setToken, doctors}
 
