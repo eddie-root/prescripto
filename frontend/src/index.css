@@ -60,3 +60,9 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+@media (max-with:740px) {
+  .active p{
+    @apply text-white bg-primary
+  }
+}
