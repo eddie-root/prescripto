@@ -1,11 +1,11 @@
 import React from 'react'
 import {assets} from '../assets/assets'
 import { NavLink } from 'react-router-dom'
-import { useAdmin } from '../context/AppContext'
+import { useApp } from '../context/AppContext'
 
 const Navbar = () => {
 
-    const { token, setToken } = useAdmin()
+    const { token, setToken } = useApp()
 
   return (
       <div className='flex justify-between items-center px-4 sm:px-10 py-3 border-b bg-white'>

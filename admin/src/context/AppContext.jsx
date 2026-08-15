@@ -1,18 +1,14 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
 
 
 export const AppContext = createContext();
 
 export const AppProvider = ({children}) => {
 
-    const [admin, setAdmin] = useState(()=> {
-        const savedAdmin = localStorage.getItem('admin');
-        return savedAdmin ? JSON.parse(savedAdmin) : null;
-    });
-    const [token, setToken] = useState(localStorage.getItem('token') || null);
 
 
-    const value = {admin, setAdmin, token, setToken}
+
+    const value = {}
 
    return (
     <AppContext.Provider value={value}>
@@ -21,4 +17,4 @@ export const AppProvider = ({children}) => {
    ) 
 }
 
-export const useAdmin = () => useContext(AppContext);
+export const useApp = () => useContext(AppContext);
