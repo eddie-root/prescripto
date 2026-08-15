@@ -3,7 +3,7 @@ import { createContext, useContext } from "react";
 
 export const DoctorContext = createContext();
 
-export const DoctorContextProvider = ({children}) => {
+export const DoctorProvider = ({children}) => {
 
 
 

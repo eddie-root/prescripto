@@ -1,10 +1,10 @@
 import { createContext, useContext, useState } from "react";
-import { toast } from 'react-toastify'
 import axios from 'axios'
+import { toast } from 'react-hot-toast'
 
 export const AdminContext = createContext();
 
-export const AdminContextProvider = ({children}) => {
+export const AdminProvider = ({children}) => {
 
     const [admin, setAdmin] = useState(()=> {
         const savedAdmin = localStorage.getItem('admin');
