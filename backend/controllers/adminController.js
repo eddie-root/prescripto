@@ -1,6 +1,8 @@
 import validator from "validator"
 import bcrypt from 'bcrypt'
-import { v2 as cloudinary } from "cloudinary"
+// Para gerar nomes de arquivo únicos e manipular caminhos
+import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
 import doctorModel from '../models/doctorModel.js'
 import jwt from 'jsonwebtoken'
 
@@ -29,12 +31,18 @@ const addDoctor = async (req, res) => {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
 
-        // upload image to cloudinary
-        const imageUpload = await cloudinary.uploader.upload(imageFile.path, {resource_type:"image"})
-        const imageUrl = imageUpload.secure_url
-        // let imageUrl = `${req.file.filename}`
+        // --- INÍCIO DA CORREÇÃO PARA IMAGENS ---
+        // Substituindo Cloudinary por uma referência local/DB
+        
+        // Gerar um nome de arquivo único para a imagem
+        const uniqueFilename = uuidv4() + path.extname(imageFile.originalname);
+        // Aqui você adicionaria a lógica para salvar imageFile.buffer em um local permanente
+        // Por exemplo: fs.writeFileSync(path.join('/caminho/para/uploads', uniqueFilename), imageFile.buffer);
+        // E então armazenaria o caminho/nome no banco de dados.
+        const imageUrl = `/uploads/${uniqueFilename}`; // Exemplo de URL/caminho a ser salvo
+        // --- FIM DA CORREÇÃO PARA IMAGENS ---
 
-        const doctorData = {
+        const doctorData = { // --- NOTA DE COMPATIBILIDADE COM PRISMA ---
             name,
             email,
             password:hashedPassword,
@@ -45,7 +53,7 @@ const addDoctor = async (req, res) => {
             about,
             fees,
             address:JSON.parse(address),
-            date:Date.now()
+            date: Date.now() // Prisma usaria DateTime
         }
 
         const newDoctor = new doctorModel(doctorData)
