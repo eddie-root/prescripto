@@ -12,7 +12,7 @@ datasource db {
 
 model User {
   // ID único para cada usuário. Usamos String com UUID para flexibilidade.
-  id        String   @id @default(uuid())
+  id        Int   @id @default(autoincrement())
   // Nome do usuário, obrigatório.
   name      String
   // Email do usuário, obrigatório e deve ser único.
@@ -40,7 +40,7 @@ model User {
 
 model Doctor {
   // ID único para cada doutor. Usamos String com UUID para flexibilidade.
-  id         String   @id @default(uuid())
+  id         Int   @id @default(autoincrement())
   // Nome do doutor, obrigatório.
   name       String
   // Email do doutor, obrigatório e deve ser único.
@@ -54,9 +54,9 @@ model Doctor {
   experience String
   about      String
   available  Boolean  @default(true)
-  fees       Int      // Assumindo que as taxas são números inteiros. Se houver decimais, use `Float` ou `Decimal`.
+  fees       Float    // Alterado para Float para permitir valores decimais em taxas.
   address    Json     @default("{\"line1\": \"\", \"line2\": \"\"}")
-  date       Int      // Assumindo que 'date' é um número (e.g., timestamp ou ID de data). Se for uma data completa, use `DateTime`.
+  date       DateTime @default(now()) // Alterado para DateTime para consistência com Date.now()
   slotsBooked Json     @default("{}") // Armazena slots reservados como JSON.
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -67,22 +67,22 @@ model Doctor {
 
 model Appointment {
   // ID único para cada agendamento.
-  id          String    @id @default(uuid())
+  id          Int    @id @default(autoincrement())
 
   // Relacionamento com o usuário que fez o agendamento
-  userId      String
+  userId      Int // Alterado para Int para corresponder ao ID do User
   user        User      @relation(fields: [userId], references: [id])
 
   // Relacionamento com o doutor agendado
-  docId       String
+  docId       Int // Alterado para Int para corresponder ao ID do Doctor
   doctor      Doctor    @relation(fields: [docId], references: [id])
 
   slotDate    String
   slotTime    String
   userData    Json      // Dados do usuário no momento do agendamento
   docData     Json      // Dados do doutor no momento do agendamento
-  amount      Int       // Valor do agendamento. Use `Float` ou `Decimal` se houver centavos.
-  date        Int       // Assumindo que é um timestamp ou ID de data. Se for uma data completa, use `DateTime`.
+  amount      Float     // Alterado para Float para permitir valores decimais em valores de agendamento.
+  date        DateTime  @default(now()) // Alterado para DateTime para consistência com Date.now()
   cancelled   Boolean   @default(false)
   payment     Boolean   @default(false)
   isCompleted Boolean   @default(false)

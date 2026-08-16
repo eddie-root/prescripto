@@ -3,12 +3,13 @@ import bcrypt from 'bcrypt'
 // Para gerar nomes de arquivo únicos e manipular caminhos
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
-import doctorModel from '../models/doctorModel.js'
 import jwt from 'jsonwebtoken'
 
 // API for adding doctor
 const addDoctor = async (req, res) => {
     try{
+        // Prisma Client is available via req.prisma
+        const prisma = req.prisma;
         const { name, email, password, speciality, degree, experience, about, fees, address } = req.body
         const imageFile = req.file
 
@@ -31,6 +32,12 @@ const addDoctor = async (req, res) => {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
 
+        // Check if doctor already exists
+        const existingDoctor = await prisma.doctor.findUnique({ where: { email } });
+        if (existingDoctor) {
+          return res.json({ success: false, message: "Doctor with this email already exists" });
+        }
+
         // --- INÍCIO DA CORREÇÃO PARA IMAGENS ---
         // Substituindo Cloudinary por uma referência local/DB
         
@@ -40,24 +47,24 @@ const addDoctor = async (req, res) => {
         // Por exemplo: fs.writeFileSync(path.join('/caminho/para/uploads', uniqueFilename), imageFile.buffer);
         // E então armazenaria o caminho/nome no banco de dados.
         const imageUrl = `/uploads/${uniqueFilename}`; // Exemplo de URL/caminho a ser salvo
+
         // --- FIM DA CORREÇÃO PARA IMAGENS ---
 
-        const doctorData = { // --- NOTA DE COMPATIBILIDADE COM PRISMA ---
+        const newDoctor = await prisma.doctor.create({
+          data: {
             name,
             email,
-            password:hashedPassword,
-            image:imageUrl,
+            password: hashedPassword,
+            image: imageUrl,
             speciality,
             degree,
             experience,
             about,
-            fees,
-            address:JSON.parse(address),
-            date: Date.now() // Prisma usaria DateTime
-        }
-
-        const newDoctor = new doctorModel(doctorData)
-        await newDoctor.save()
+            fees: parseFloat(fees), // Certifique-se de que fees é um número
+            address: JSON.parse(address),
+            // date: Date.now() é default no schema
+          },
+        });
 
         res.json({success: true, message: "Doctor Added"})
 
@@ -70,6 +77,8 @@ const addDoctor = async (req, res) => {
 // API For admin Login
 const loginAdmin = async (req, res) => {
     try{
+        // Prisma Client is available via req.prisma
+        const prisma = req.prisma; // Admin login não usa o modelo Doctor, mas o prisma client ainda pode ser acessado
 
         const {email,password} = req.body
 
@@ -91,8 +100,10 @@ const loginAdmin = async (req, res) => {
 // API to get all doctors list for admin panel
 const allDoctors = async (req, res) => {
     try{
+        // Prisma Client is available via req.prisma
+        const prisma = req.prisma;
 
-        const doctors = await doctorModel.find({}).select('-password')
+        const doctors = await prisma.doctor.findMany({ select: { password: false } });
         res.json({success: true, doctors})
 
     }catch (error){

@@ -1,12 +1,8 @@
-// import multer from "multer";
-
-// export const upload = multer({ 
-//     storage: multer.diskStorage({})}
-// );
-
 import multer from 'multer';
 
-// memoryStorage = arquivo fica na memória RAM, não salva no disco
+// Configura o Multer para armazenar o arquivo em memória (como um Buffer)
 const storage = multer.memoryStorage();
 
-export const upload = multer({ storage });
+const upload = multer({ storage: storage });
+
+export default upload;
