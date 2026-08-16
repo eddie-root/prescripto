@@ -1,5 +1,5 @@
-import { useContext } from "react"
-import { AdminContext } from './context/AdminContext'
+
+import { useAdmin } from './context/AdminContext'
 import { Toaster } from "react-hot-toast"
 import { Route, Routes } from "react-router-dom"
 import Login from "./pages/Login"
@@ -11,7 +11,7 @@ import Dashboard from './pages/Dashboard'
 
 const App = () => {
 
-  const {aToken} = useContext(AdminContext)
+  const {aToken} = useAdmin()
 
   return aToken ? (
     <div className="bg-[#f8f9fd]">
